@@ -15,12 +15,25 @@ The following sections of this `README` will be a documentation the steps I take
 
 
 ## Contents
-1. Virtual Machine set-up
-2. Creation of production database
-3. To be continued... 
+1. Virtual Machine Set-up
+2. Creation of Production Database
+3. Setting up the Azure Database 
+4. Data Migration
 
-## Step 1: Setting up the virtual machine
+## Step 1: Setting up the Virtual Machine
 In order to create a safe workspace to develop the database I have utilised Azure's virtual machine capabilities, this means that I have a non-physical operating system in which to build and test the database. The virtual machine is scalable to the needs of the company and database and it will be readily avaialable with minimal downtime. Configuring the virtual machine was rather straightforward; using a `standard_b2ms` system named `migration-vm`. Once it was accessable through Microsoft Remote Desktop I began installing the tools that I needed in order to make this project a success. 
 
 ## Step 2: Creation of the Production Database
 For this stage I opted to download the database to a local machine but I have also saved a copy in the `adventurebackup` storage account as a precautionary measure. Using the `.bak` to restore the database in SMSS was rather straightforward, and at the moment it is being hosted on the `migration-vm` virtual machine. 
+
+## Step 3: Setting up the Azure Database
+I began by creating a new database server called `adventure-works-azure`, I thought this would be a suitable solution as it would provide Adventure Works with their own dedicated server, should they ever expand or require additional databases. Within this server I created the `adventure-works-cloud` database where the data was going to be migrated to. 
+As a security measure I have only allowed connections from my IP address to access the database, all other public IP's are denied access. 
+
+## Step 4: Data Migration
+After configuring the database it was time to begin the migration process. The first thing I did was compare the database schemas in `Azure Data Studio` using `SQL Scheme Compare v1.21.0`. 
+Thankfully, the extension decided the schemas were compatible and as a result the migration process was fairly smooth. Using the `Azure Migration v1.5.1` extension I was able to migrate the database to the cloud.
+As part of this process I had to download `Microsoft Integration Runtime` and configure it using an authentication key (I can't share that information sorry,) in order to make the migration happen. 
+
+## Step 5: 
+
