@@ -19,6 +19,7 @@ The following sections of this `README` will be a documentation the steps I take
 2. Creation of Production Database
 3. Setting up the Azure Database 
 4. Data Migration
+5. Data Backup and Restore
 
 ## Step 1: Setting up the Virtual Machine
 In order to create a safe workspace to develop the database I have utilised Azure's virtual machine capabilities, this means that I have a non-physical operating system in which to build and test the database. The virtual machine is scalable to the needs of the company and database and it will be readily avaialable with minimal downtime. Configuring the virtual machine was rather straightforward; using a `standard_b2ms` system named `migration-vm`. Once it was accessable through Microsoft Remote Desktop I began installing the tools that I needed in order to make this project a success. 
@@ -35,5 +36,10 @@ After configuring the database it was time to begin the migration process. The f
 Thankfully, the extension decided the schemas were compatible and as a result the migration process was fairly smooth. Using the `Azure Migration v1.5.1` extension I was able to migrate the database to the cloud.
 As part of this process I had to download `Microsoft Integration Runtime` and configure it using an authentication key (I can't share that information sorry,) in order to make the migration happen. 
 
-## Step 5: 
+## Step 5: Data Backup and Restore
+For the next part of the project I created another Virtual Machine that I will be using to create a safety net for the original database incase of any unforeseen issues. Initially the backup was saved to the local machine but in order to add an extra layer of security a copy of the `.bak` file was uploaded to the `adventurebackup` storage account. 
+Finally, for best practice the access keys for `adventurebackup` were saved as the credential `backupbarry` (similar to Wreck-it-Ralph) so that an automated backup schedule could be created. The Database now automatically creates backups at midnight every Sunday, a time when the database should be under a very low load. 
+
+## Step 6: Disaster Recovery Simulation 
+
 
