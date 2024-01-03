@@ -33,16 +33,22 @@ In order to create a safe workspace to develop the database I have utilised Azur
 
 ![migration-vm](images/migration-vm.png)
 
+[Back to Contents](#contents)
+
 ## Step 2: Creation of the Production Database
 For this stage I opted to download the database to a local machine but I have also saved a copy in the `adventurebackup` storage account as a precautionary measure. Using the `.bak` to restore the database in SMSS was rather straightforward, and at the moment it is being hosted on the `migration-vm` virtual machine. 
 
 ![Production Schema](images/recovered_production_database.png)
+
+[Back to Contents](#contents)
 
 ## Step 3: Setting up the Azure Database
 I began by creating a new database server called `adventure-works-azure`, I thought this would be a suitable solution as it would provide Adventure Works with their own dedicated server, should they ever expand or require additional databases. Within this server I created the `adventure-works-cloud` database where the data was going to be migrated to. 
 As a security measure I have only allowed connections from my IP address to access the database, all other public IP's are denied access. 
 
 ![Firewall rules](/images/firewall-rules.png)
+
+[Back to Contents](#contents)
 
 ## Step 4: Data Migration
 After configuring the database it was time to begin the migration process. The first thing I did was compare the database schemas in `Azure Data Studio` using `SQL Scheme Compare v1.21.0`. 
@@ -56,15 +62,21 @@ As part of this process I had to download `Microsoft Integration Runtime` and co
 
 ![Azure Migration](images/Azure%20SQL%20migration.png)
 
+[Back to Contents](#contents)
+
 ## Step 5: Data Backup and Restore
 For the next part of the project I created another Virtual Machine that I will be using to create a safety net for the original database incase of any unforeseen issues. Initially the backup was saved to the local machine but in order to add an extra layer of security a copy of the `.bak` file was uploaded to the `adventurebackup` storage account. 
 Finally, for best practice the access keys for `adventurebackup` were saved as the credential `backupbarry` (similar to Wreck-it-Ralph) so that an automated backup schedule could be created. The Database now automatically creates backups at midnight every Sunday, a time when the database should be under a very low load. 
+
+[Back to Contents](#contents)
 
 ## Step 6: Disaster Recovery Simulation 
 During this phase of the project I simulated data corruption within the database by creating a query that set a number values in `Person.EmailAddress` to `NULL`. 
 ![Table comparison](images/database-corrupt.png)
 
 In order to restore the lost data I had to restore the database from a pervious backup. In this situation it was imperative that I sourced the backup from the closest possible time to the corruption of the data in order to maintain best practices.
+
+[Back to Contents](#contents)
 
 ## Step 7: Geo-Replication and Failover
 In order to enhance the reliability and data protection of the database server, I have configured a Geo-replication of the restored `adventure-works-cloud` database.
@@ -78,4 +90,10 @@ The above image demonstrates the failover-tests success, as the UK South based s
 
 The failover process is cyclical, and as a result the above image shows what happens when an outage occurs on the USA server. The servers revert back ot their original configuration. 
 
+[Back to Contents](#contents)
+
 ## Step 8: Microsoft Entra Directory Integration
+
+
+
+[Back to Contents](#contents)
