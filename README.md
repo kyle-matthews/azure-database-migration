@@ -19,11 +19,14 @@ The following sections of this `README` will be a documentation the steps I take
 
 
 ## Contents
-1. Virtual Machine Set-up
-2. Creation of Production Database
-3. Setting up the Azure Database 
-4. Data Migration
-5. Data Backup and Restore
+1. [Virtual Machine Set-up](#step-1-setting-up-the-virtual-machine)
+2. [Creation of Production Database](#step-2-creation-of-the-production-database)
+3. [Setting up the Azure Database](#step-3-setting-up-the-azure-database)
+4. [Data Migration](#step-4-data-migration)
+5. [Data Backup and Restore](#step-5-data-backup-and-restore)
+6. [Disaster Recovery Simulation](#step-6-disaster-recovery-simulation)
+7. [Geo-Replication and Failover](#step-7-geo-replication-and-failover)
+8. [Microsoft Entra Directory Integration](#step-8-microsoft-entra-directory-integration)
 
 ## Step 1: Setting up the Virtual Machine
 In order to create a safe workspace to develop the database I have utilised Azure's virtual machine capabilities, this means that I have a non-physical operating system in which to build and test the database. The virtual machine is scalable to the needs of the company and database and it will be readily avaialable with minimal downtime. Configuring the virtual machine was rather straightforward; using a `standard_b2ms` system named `migration-vm`. Once it was accessable through Microsoft Remote Desktop I began installing the tools that I needed in order to make this project a success. 
@@ -60,3 +63,19 @@ Finally, for best practice the access keys for `adventurebackup` were saved as t
 ## Step 6: Disaster Recovery Simulation 
 During this phase of the project I simulated data corruption within the database by creating a query that set a number values in `Person.EmailAddress` to `NULL`. 
 ![Table comparison](images/database-corrupt.png)
+
+In order to restore the lost data I had to restore the database from a pervious backup. In this situation it was imperative that I sourced the backup from the closest possible time to the corruption of the data in order to maintain best practices.
+
+## Step 7: Geo-Replication and Failover
+In order to enhance the reliability and data protection of the database server, I have configured a Geo-replication of the restored `adventure-works-cloud` database.
+For security it is based on a new server called `adventure-works-failover` and it is based on the West of the USA. This strategy protects data availablity and minimises disruption or downtime that could be costly (financially or legally) to a company. 
+
+![Failover Successful](images/failover-success.png)
+
+The above image demonstrates the failover-tests success, as the UK South based server `adventure-works-cloud` is detected as being down, the `adventure-works-replication` steps up to become the primary server, temporarily demoting the usual Primary server to secondary. 
+
+![Failover Map](images/failover-map.png)
+
+The failover process is cyclical, and as a result the above image shows what happens when an outage occurs on the USA server. The servers revert back ot their original configuration. 
+
+## Step 8: Microsoft Entra Directory Integration
